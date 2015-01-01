@@ -11,20 +11,20 @@
 val default_file = ".bookmarks"
 
 (* Function definitions *)
-(*
+
 fun seek_entry (file, entry) =
     let
 	val ins = TextIO.openIn file				
-	fun f xs =
+	fun f xs i =
 	    case xs of
-		NONE => (TextIO.closeIn ins; false)
-	      | _  => if String.isSubstring((valOf xs) entry)
-		      then true
-		      else f (TextIO.inputLine ins)
+		NONE => (TextIO.closeIn ins; NONE)
+	      | _  => if String.isPrefix (valOf xs) entry
+		      then SOME i
+		      else f (TextIO.inputLine ins) (i+1)
     in
-	f (TextIO.inputLine ins)
+	f (TextIO.inputLine ins) 0
     end
-*)
+
 fun init_writer file =
     let
 	val outs = TextIO.openAppend file
