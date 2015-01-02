@@ -43,7 +43,7 @@ fun parse_entry_to_write (f, al) =
 	NONE => al
       | _ => (tl (tl al))
 
-fun format_output out =
+fun format_entry out =
     case out of
 	[] => "\n"
       | x::[] => x ^ format_output [] 
@@ -59,7 +59,7 @@ fun choose_writer c =
 val args = CommandLine.arguments()
 val cmd = parse_file_command (args)
 val entry = parse_entry_to_write (cmd, args)
+val f_entry = format_entry(entry)
 val writer = choose_writer(cmd)
-val f_output = format_output (output)
 val _ = writer f_output
 val _ = OS.Process.exit(OS.Process.success)
