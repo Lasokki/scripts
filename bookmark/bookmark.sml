@@ -23,19 +23,6 @@ fun load_file (file) =
 	f (TextIO.inputLine ins)
     end
 
-fun seek_entry (file, entry) =
-    let
-	val ins = TextIO.openIn file				
-	fun f xs i =
-	    case xs of
-		NONE => (TextIO.closeIn ins; NONE)
-	      | _  => if String.isPrefix (valOf xs) entry
-		      then SOME i
-		      else f (TextIO.inputLine ins) (i+1)
-    in
-	f (TextIO.inputLine ins) 0
-    end
-
 fun init_writer file =
     let
 	val outs = TextIO.openAppend file
@@ -51,7 +38,7 @@ fun parse_file_command al =
 		 then SOME (hd xs)
 		 else NONE
 
-fun parse_stuff_to_write (f, al) =
+fun parse_entry_to_write (f, al) =
     case f of
 	NONE => al
       | _ => (tl (tl al))
@@ -71,7 +58,7 @@ fun choose_writer c =
 (* Execution *)
 val args = CommandLine.arguments()
 val cmd = parse_file_command (args)
-val output = parse_stuff_to_write (cmd, args)
+val entry = parse_entry_to_write (cmd, args)
 val writer = choose_writer(cmd)
 val f_output = format_output (output)
 val _ = writer f_output
