@@ -12,6 +12,17 @@ val default_file = ".bookmarks"
 
 (* Function definitions *)
 
+fun load_file (file) =
+    let
+	val ins = TextIO.openIn file
+	fun f xs =
+	    case xs of
+		NONE => (TextIO.closeIn ins; [])
+	      | _ => (valOf xs) :: f (TextIO.inputLine ins)
+    in
+	f (TextIO.inputLine ins)
+    end
+
 fun seek_entry (file, entry) =
     let
 	val ins = TextIO.openIn file				
