@@ -37,7 +37,7 @@ fun parse_file_command al =
 
 fun format_output (lines, entry) =
     case lines of
-	[] => hd entry ^ " : " ^ (hd (tl entry)) ^ "\n"
+	[] => String.concatWith " : " entry ^ "\n"
       | x::xs => if String.isPrefix (hd entry) x
 		 then "" ^ format_output(xs, entry)
 		 else x ^ format_output(xs, entry)
