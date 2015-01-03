@@ -31,7 +31,7 @@ fun init_writer file =
 fun parse_file_command al =
     case al of
 	[] => raise List.Empty
-      | x::xs => if x = "-f"
+      | x::xs => if x = "--file" orelse x = "-f"
 		 then SOME (hd xs)
 		 else NONE
 
