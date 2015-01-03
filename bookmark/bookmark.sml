@@ -9,7 +9,7 @@
 
 (* Function definitions *)
 
-fun load_file (file) =
+fun load_file file =
     let
 	val ins = TextIO.openIn file
 	fun f xs =
@@ -22,7 +22,7 @@ fun load_file (file) =
 
 fun init_writer file =
     let
-	val outs = TextIO.openAppend file
+	val outs = TextIO.openOut file
 	fun f x = TextIO.output(outs, x)
     in
 	f
@@ -35,11 +35,12 @@ fun parse_file_command al =
 		 then SOME (hd xs)
 		 else NONE
 
-fun format_entry out =
-    case out of
-	[] => "\n"
-      | x::[] => x ^ format_entry [] 
-      | x::xs => x ^ " : " ^ format_entry xs 
+fun format_output (lines, entry) =
+    case lines of
+	[] => hd entry ^ " : " ^ (hd (tl entry)) ^ "\n"
+      | x::xs => if String.isPrefix (hd entry) x
+		 then "" ^ format_output(xs, entry)
+		 else x ^ format_output(xs, entry)
 
 (* Execution *)
 val args = CommandLine.arguments()
@@ -51,13 +52,11 @@ val entry = case cmd of NONE => args
 val file = case cmd of NONE => ".bookmarks"
 		     | _ => valOf cmd
 
-val lines = load_file(file)
+val lines = load_file(file) handle Io => []
 
-val f_entry = format_entry(entry)
-
-(*val output = format_output(lines, f_entry)*)
+val output = format_output(lines, entry)
 
 val writer = init_writer(file)
-val _ = writer f_entry
+val _ = writer output
 
 val _ = OS.Process.exit(OS.Process.success)
