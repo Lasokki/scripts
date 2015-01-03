@@ -7,9 +7,6 @@
 
 *)
 
-(* Some required values *)
-val default_file = ".bookmarks"
-
 (* Function definitions *)
 
 fun load_file (file) =
@@ -38,28 +35,29 @@ fun parse_file_command al =
 		 then SOME (hd xs)
 		 else NONE
 
-fun parse_entry_to_write (f, al) =
-    case f of
-	NONE => al
-      | _ => (tl (tl al))
-
 fun format_entry out =
     case out of
 	[] => "\n"
-      | x::[] => x ^ format_output [] 
-      | x::xs => x ^ " : " ^ format_output xs 
-
-fun choose_writer c =
-    case c of
-	NONE => init_writer (default_file)
-      | _ => init_writer (valOf c)
-
+      | x::[] => x ^ format_entry [] 
+      | x::xs => x ^ " : " ^ format_entry xs 
 
 (* Execution *)
 val args = CommandLine.arguments()
 val cmd = parse_file_command (args)
-val entry = parse_entry_to_write (cmd, args)
+
+val entry = case cmd of NONE => args
+		     | _ => (tl (tl args))
+
+val file = case cmd of NONE => ".bookmarks"
+		     | _ => valOf cmd
+
+val lines = load_file(file)
+
 val f_entry = format_entry(entry)
-val writer = choose_writer(cmd)
-val _ = writer f_output
+
+(*val output = format_output(lines, f_entry)*)
+
+val writer = init_writer(file)
+val _ = writer f_entry
+
 val _ = OS.Process.exit(OS.Process.success)
