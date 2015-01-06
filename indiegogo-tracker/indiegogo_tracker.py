@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 """ 
 Simple script for pulling balance of a Indiegogo-campaign.
 

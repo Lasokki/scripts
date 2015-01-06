@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 """
     Simple script for making quick timestamped notes.
 """
