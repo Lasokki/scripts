@@ -54,9 +54,16 @@ if __name__ == "__main__":
     balance = 0
 
     while True:
-        doc = get_doc(url)
-        balance = search_balance(doc)
-        title = doc.find("h1")
-        print_balance(balance, old_balance, title)
-        old_balance = balance
-        time.sleep(delay)
+        try:
+            doc = get_doc(url)
+            balance = search_balance(doc)
+            title = doc.find("h1")
+            print_balance(balance, old_balance, title)
+            old_balance = balance
+            time.sleep(delay)
+        except (KeyboardInterrupt, SystemExit):
+            print "\nExited peacefully"
+            exit()
+        except:
+            pass
+
